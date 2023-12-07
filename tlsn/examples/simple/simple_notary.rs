@@ -3,15 +3,18 @@
 use p256::pkcs8::DecodePrivateKey;
 use std::env;
 
-use tokio::net::TcpListener;
+use tokio::{net::TcpListener
+    // io::{AsyncReadExt, AsyncWriteExt}
+};
+// use tokio::io::BufWriter;
 use tokio_util::compat::TokioAsyncReadCompatExt;
 
 use tlsn_verifier::tls::{Verifier, VerifierConfig};
 
-const NOTARY_SIGNING_KEY_PATH: &str = "../../../notary-server/fixture/notary/notary.key";
+const NOTARY_SIGNING_KEY_PATH: &str = "../../notary-server/fixture/notary/notary.key";
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::fmt::init();
 
     // Allow passing an address to listen on as the first argument of this
@@ -34,7 +37,7 @@ async fn main() {
 
     loop {
         // Asynchronously wait for an inbound socket.
-        let (socket, socket_addr) = listener.accept().await.unwrap();
+        let (socket, socket_addr) = listener.accept().await?;
 
         println!("Accepted connection from: {}", socket_addr);
 
@@ -47,10 +50,34 @@ async fn main() {
                 // for each notarization.
                 let config = VerifierConfig::builder().id("example").build().unwrap();
 
-                Verifier::new(config)
+                let session_header = Verifier::new(config)
                     .notarize::<_, p256::ecdsa::Signature>(socket.compat(), &signing_key)
                     .await
                     .unwrap();
+
+                println!("Session header result {:?}", session_header);
+
+                // let mut buf = Vec::new();
+                // buf.resize(256000, 0u8);
+                // // In a loop, read data from the socket and write the data back.
+                // loop {
+                //     let n = match socket.read(&mut buf).await {
+                //         // socket closed
+                //         Ok(n) if n == 0 => return,
+                //         Ok(n) => n,
+                //         Err(e) => {
+                //             eprintln!("failed to read from socket; err = {:?}", e);
+                //             return;
+                //         }
+                //     };
+
+                //     println!("Socket buffer received {:?}", String::from_utf8_lossy(&buf[..n]));
+
+                //     if let Err(e) = socket.write_all(&buf[..n]).await {
+                //         eprintln!("failed to write to socket; err = {:?}", e);
+                //         return;
+                //     }
+                // }
             });
         }
     }

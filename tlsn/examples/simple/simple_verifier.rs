@@ -67,7 +67,7 @@ fn main() {
 
 /// Returns a Notary pubkey trusted by this Verifier
 fn notary_pubkey() -> p256::PublicKey {
-    let pem_file_path = "../../../notary-server/fixture/notary/notary.pub";
+    let pem_file_path = "../../notary-server/fixture/notary/notary.pub";
 
     p256::PublicKey::read_public_key_pem_file(pem_file_path).unwrap()
 }

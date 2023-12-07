@@ -3,7 +3,7 @@
 ///
 /// The example uses the notary server implemented in ./simple_notary.rs
 use futures::AsyncWriteExt;
-use hyper::{Body, Request, StatusCode};
+use hyper::{body::to_bytes, Body, Request, StatusCode};
 use std::ops::Range;
 use tlsn_core::proof::TlsProof;
 use tokio::io::AsyncWriteExt as _;
@@ -12,8 +12,10 @@ use tokio_util::compat::{FuturesAsyncReadCompatExt, TokioAsyncReadCompatExt};
 use tlsn_prover::tls::{Prover, ProverConfig};
 
 // Setting of the application server
-const SERVER_DOMAIN: &str = "example.com";
+// const SERVER_DOMAIN: &str = "example.com";
+const SERVER_DOMAIN: &str = "baconipsum.com";
 const USER_AGENT: &str = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36";
+const REQUEST_URI: &str = "/api/?type=meat-and-filler"; // "/";
 
 // Setting of the notary server — make sure these are the same with those in ./simple_notary.rs
 const NOTARY_HOST: &str = "127.0.0.1";
@@ -44,15 +46,21 @@ async fn main() {
         .await
         .unwrap();
 
+    println!("Create a Prover and set it up with the Notary.");
+
     // Connect to the Server via TCP. This is the TLS client socket.
     let client_socket = tokio::net::TcpStream::connect((SERVER_DOMAIN, 443))
         .await
         .unwrap();
 
+    println!("Connect to the Server via TCP. This is the TLS client socket.");
+
     // Bind the Prover to the server connection.
     // The returned `mpc_tls_connection` is an MPC TLS connection to the Server: all data written
     // to/read from it will be encrypted/decrypted using MPC with the Notary.
     let (mpc_tls_connection, prover_fut) = prover.connect(client_socket.compat()).await.unwrap();
+
+    println!("Bind the Prover to the server connection.");
 
     // Spawn the Prover task to be run concurrently
     let prover_task = tokio::spawn(prover_fut);
@@ -68,12 +76,12 @@ async fn main() {
 
     // Build a simple HTTP request with common headers
     let request = Request::builder()
-        .uri("/")
+        .uri(REQUEST_URI)
         .header("Host", SERVER_DOMAIN)
         .header("Accept", "*/*")
         // Using "identity" instructs the Server not to use compression for its HTTP response.
         // TLSNotary tooling does not support compression.
-        .header("Accept-Encoding", "identity")
+        // .header("Accept-Encoding", "identity")
         .header("Connection", "close")
         .header("User-Agent", USER_AGENT)
         .body(Body::empty())
@@ -84,9 +92,17 @@ async fn main() {
     // Send the request to the Server and get a response via the MPC TLS connection
     let response = request_sender.send_request(request).await.unwrap();
 
-    println!("Got a response from the server");
+    println!(
+        "Received response status from server: {:?}",
+        response.status()
+    );
 
     assert!(response.status() == StatusCode::OK);
+
+    println!(
+        "Received response from server: {:?}",
+        String::from_utf8_lossy(&to_bytes(response.into_body()).await.unwrap())
+    );
 
     // Close the connection to the server
     let mut client_socket = connection_task.await.unwrap().unwrap().io.into_inner();
