@@ -1,5 +1,3 @@
-use std::time::Duration;
-
 use elliptic_curve::pkcs8::DecodePublicKey;
 
 use tlsn_core::proof::{SessionProof, TlsProof};
@@ -33,12 +31,12 @@ fn main() {
         header,
         // This is the session_info, which contains the server_name, that is checked against the
         // certificate chain shared in the TLS handshake.
-        session_info,
+        // session_info,
         ..
     } = session;
 
     // The time at which the session was recorded
-    let time = chrono::DateTime::UNIX_EPOCH + Duration::from_secs(header.time());
+    // let time = chrono::DateTime::UNIX_EPOCH + Duration::from_secs(header.time());
 
     // Verify the substrings proof against the session header.
     //
@@ -51,7 +49,7 @@ fn main() {
 
     // println!(
     //     "Successfully verified that the bytes below came from a session with {:?} at {}.",
-    //     session_info.server_name, time
+        // session_info.server_name, time
     // );
     // println!("Bytes sent:");
     // println!();
