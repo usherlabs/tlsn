@@ -23,7 +23,7 @@ Cargo.lock
 .vscode/
 
 # transcript
-*.json
+proof.json
 
 # env var
 *.env

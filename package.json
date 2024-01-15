@@ -1,0 +1,21 @@
+{
+  "name": "tlsn",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">     <img src=\"./tlsn-banner.png\" width=1280 /> </p>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:examples": "sh ./build_examples.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/usherlabs/tlsn.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/usherlabs/tlsn/issues"
+  },
+  "homepage": "https://github.com/usherlabs/tlsn#readme"
+}
