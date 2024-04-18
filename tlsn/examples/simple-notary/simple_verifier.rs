@@ -1,5 +1,3 @@
-use std::{str, time::Duration};
-
 use elliptic_curve::pkcs8::DecodePublicKey;
 
 use tlsn_core::proof::{SessionProof, TlsProof};
@@ -8,7 +6,7 @@ use tlsn_core::proof::{SessionProof, TlsProof};
 /// it and prints the verified data to the console.
 fn main() {
     // Deserialize the proof
-    let proof = std::fs::read_to_string("simple_proof.json").unwrap();
+    let proof = std::fs::read_to_string("proof.json").unwrap();
     let proof: TlsProof = serde_json::from_str(proof.as_str()).unwrap();
 
     let TlsProof {
@@ -33,12 +31,12 @@ fn main() {
         header,
         // This is the session_info, which contains the server_name, that is checked against the
         // certificate chain shared in the TLS handshake.
-        session_info,
+        // session_info,
         ..
     } = session;
 
     // The time at which the session was recorded
-    let time = chrono::DateTime::UNIX_EPOCH + Duration::from_secs(header.time());
+    // let time = chrono::DateTime::UNIX_EPOCH + Duration::from_secs(header.time());
 
     // Verify the substrings proof against the session header.
     //
@@ -49,28 +47,23 @@ fn main() {
     sent.set_redacted(b'X');
     recv.set_redacted(b'X');
 
-    println!("-------------------------------------------------------------------");
-    println!(
-        "Successfully verified that the bytes below came from a session with {:?} at {}.",
-        session_info.server_name, time
-    );
-    println!("Note that the bytes which the Prover chose not to disclose are shown as X.");
-    println!();
-    println!("Bytes sent:");
-    println!();
+    // println!(
+    //     "Successfully verified that the bytes below came from a session with {:?} at {}.",
+        // session_info.server_name, time
+    // );
+    // println!("Bytes sent:");
+    // println!();
     print!("{}", String::from_utf8(sent.data().to_vec()).unwrap());
-    println!();
-    println!("Bytes received:");
-    println!();
-    println!("{}", String::from_utf8(recv.data().to_vec()).unwrap());
-    println!("-------------------------------------------------------------------");
+    println!("seperator");
+    // println!("Bytes received:");
+    // println!();
+    print!("{}", String::from_utf8(recv.data().to_vec()).unwrap());
+    // println!("-------------------------------------------------------------------");
 }
 
 /// Returns a Notary pubkey trusted by this Verifier
 fn notary_pubkey() -> p256::PublicKey {
-    let pem_file = str::from_utf8(include_bytes!(
-        "../../../notary-server/fixture/notary/notary.pub"
-    ))
-    .unwrap();
-    p256::PublicKey::from_public_key_pem(pem_file).unwrap()
+    let pem_file_path = "./keys/notary.pub";
+
+    p256::PublicKey::read_public_key_pem_file(pem_file_path).unwrap()
 }
