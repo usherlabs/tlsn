@@ -28,7 +28,8 @@ mpz-circuits.workspace = true
 futures.workspace = true
 thiserror.workspace = true
 derive_builder.workspace = true
-rand.workspace = true
+# rand.workspace = true
+rand = "0.8"
 signature.workspace = true
 opaque-debug.workspace = true
 

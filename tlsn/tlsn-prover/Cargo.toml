@@ -36,7 +36,8 @@ mpz-garble-core.workspace = true
 mpz-ot.workspace = true
 mpz-core.workspace = true
 
-rand.workspace = true
+# rand.workspace = true
+rand = "0.8"
 futures.workspace = true
 thiserror.workspace = true
 webpki-roots.workspace = true
