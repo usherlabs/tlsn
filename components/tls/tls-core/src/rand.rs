@@ -1,11 +1,11 @@
 use crate::{msgs::codec, Error};
-use rand::{thread_rng, Rng};
 
 /// Fill the whole slice with random material.
 pub fn fill_random(bytes: &mut [u8]) -> Result<(), Error> {
-    thread_rng()
-        .try_fill(bytes)
-        .map_err(|_| Error::General("failed to get random from system".to_string()))
+    // TODO write a pseudo-random number genetor based on the length
+    let random_number = 0;
+    bytes.fill(random_number);
+    Ok(())
 }
 
 /// Make a Vec<u8> of the given size

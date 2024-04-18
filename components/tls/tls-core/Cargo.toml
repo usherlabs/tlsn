@@ -20,7 +20,6 @@ ghash = []
 logging = ["tracing"]
 
 [dependencies]
-rand.workspace = true
 sct.workspace = true
 webpki = { workspace = true, features = ["alloc", "std"] }
 tracing = { workspace = true, optional = true }
