@@ -57,8 +57,16 @@ name = "simple_verifier"
 path = "simple/simple_verifier.rs"
 
 [[example]]
-name = "simple_notary"
-path = "simple/simple_notary.rs"
+name = "sn_notary"
+path = "simple-notary/simple_notary.rs"
+
+[[example]]
+name = "sn_prover"
+path = "simple-notary/simple_prover.rs"
+
+[[example]]
+name = "sn_verifier"
+path = "simple-notary/simple_verifier.rs"
 
 [[example]]
 name = "twitter_dm"
