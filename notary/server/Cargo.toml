@@ -43,3 +43,6 @@ tlsn-verifier = { path = "../../tlsn/tlsn-verifier" }
 tower = { version = "0.4.12", features = ["make"] }
 tower-http = { version = "0.5", features = ["cors"] }
 tower-service = "0.3.2"
+
+[dev-dependencies]
+tower = { version = "0.4.12", features = ["util"] }
