@@ -139,21 +139,6 @@ impl From<Closed> for Prove {
     }
 }
 
-/// Abort state.
-pub struct Abort {
-    pub(crate) mux_ctrl: MuxControl,
-    pub(crate) mux_fut: MuxFuture,
-}
-
-impl From<Closed> for Abort {
-    fn from(state: Closed) -> Self {
-        Self {
-            mux_ctrl: state.mux_ctrl,
-            mux_fut: state.mux_fut,
-        }
-    }
-}
-
 #[allow(missing_docs)]
 pub trait ProverState: sealed::Sealed {}
 
@@ -162,7 +147,6 @@ impl ProverState for Setup {}
 impl ProverState for Closed {}
 impl ProverState for Notarize {}
 impl ProverState for Prove {}
-impl ProverState for Abort {}
 
 mod sealed {
     pub trait Sealed {}
@@ -171,7 +155,6 @@ mod sealed {
     impl Sealed for super::Closed {}
     impl Sealed for super::Notarize {}
     impl Sealed for super::Prove {}
-    impl Sealed for super::Abort {}
 }
 
 fn collect_encodings(
