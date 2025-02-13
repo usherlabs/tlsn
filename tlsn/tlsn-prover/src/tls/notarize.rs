@@ -45,7 +45,17 @@ impl Prover<Notarize> {
             builder,
         } = self.state;
 
-        let commitments = builder.build()?;
+        let commitments = match builder.build() {
+            Ok(commitments) => commitments,
+            Err(e) => {
+                if !mux_fut.is_complete() {
+                    mux_ctrl.mux().close();
+                    mux_fut.await?;
+                    vm.finalize().await?;
+                }
+                return Err(ProverError::CommitmentBuilder(e));
+            }
+        };
 
         let session_data = SessionData::new(
             ServerName::Dns(self.config.server_dns().to_string()),
