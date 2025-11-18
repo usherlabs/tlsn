@@ -59,7 +59,7 @@ tlsn-tls-backend = { path = "crates/tls/backend" }
 tlsn-tls-client = { path = "crates/tls/client" }
 tlsn-tls-client-async = { path = "crates/tls/client-async" }
 tlsn-tls-core = { path = "crates/tls/core" }
-tlsn-utils = { git = "https://github.com/tlsnotary/tlsn-utils", rev = "6168663" }
+tlsn-utils = { git = "https://github.com/usherlabs/tlsn-utils", rev = "29dfd175" }
 tlsn-harness-core = { path = "crates/harness/core" }
 tlsn-harness-executor = { path = "crates/harness/executor" }
 tlsn-harness-runner = { path = "crates/harness/runner" }
@@ -83,9 +83,9 @@ mpz-ideal-vm = { git = "https://github.com/privacy-ethereum/mpz", tag = "v0.1.0-
 
 rangeset = { version = "0.2" }
 serio = { version = "0.2" }
-spansy = { git = "https://github.com/tlsnotary/tlsn-utils", rev = "6168663" }
+spansy = { git = "https://github.com/usherlabs/tlsn-utils", rev = "29dfd175" }
 uid-mux = { version = "0.2" }
-websocket-relay = { git = "https://github.com/tlsnotary/tlsn-utils", rev = "6168663" }
+websocket-relay = { git = "https://github.com/usherlabs/tlsn-utils", rev = "29dfd175" }
 
 aead = { version = "0.4" }
 aes = { version = "0.8" }

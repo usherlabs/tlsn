@@ -6778,7 +6778,7 @@ dependencies = [
 [[package]]
 name = "spansy"
 version = "0.1.0"
-source = "git+https://github.com/tlsnotary/tlsn-utils?rev=6168663#6168663495281f2c1b2c1734dc276cecc4d36ef1"
+source = "git+https://github.com/usherlabs/tlsn-utils?rev=29dfd175#29dfd175a2c51cc6f23f94218965a0c977d2d7f5"
 dependencies = [
  "bytes",
  "httparse",
@@ -7634,7 +7634,7 @@ dependencies = [
 [[package]]
 name = "tlsn-utils"
 version = "0.1.0"
-source = "git+https://github.com/tlsnotary/tlsn-utils?rev=6168663#6168663495281f2c1b2c1734dc276cecc4d36ef1"
+source = "git+https://github.com/usherlabs/tlsn-utils?rev=29dfd175#29dfd175a2c51cc6f23f94218965a0c977d2d7f5"
 
 [[package]]
 name = "tlsn-wasm"
@@ -8486,7 +8486,7 @@ dependencies = [
 [[package]]
 name = "websocket-relay"
 version = "0.1.0"
-source = "git+https://github.com/tlsnotary/tlsn-utils?rev=6168663#6168663495281f2c1b2c1734dc276cecc4d36ef1"
+source = "git+https://github.com/usherlabs/tlsn-utils?rev=29dfd175#29dfd175a2c51cc6f23f94218965a0c977d2d7f5"
 dependencies = [
  "anyhow",
  "form_urlencoded",
