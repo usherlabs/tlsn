@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt};
+use std::{collections::BTreeMap, fmt};
 
 use rangeset::{RangeSet, UnionMut};
 use serde::{Deserialize, Serialize};
@@ -30,7 +30,7 @@ pub struct EncodingProof {
     /// The proof of inclusion of the commitment(s) in the Merkle tree of
     /// commitments.
     pub(super) inclusion_proof: MerkleProof,
-    pub(super) openings: HashMap<usize, Opening>,
+    pub(super) openings: BTreeMap<usize, Opening>,
 }
 
 impl EncodingProof {
@@ -124,6 +124,29 @@ impl EncodingProof {
 
         Ok((auth_sent, auth_recv))
     }
+
+    /// Create a public clone of the proof by wiping private data from all the Openings of the Transcript
+    pub fn public_clone(&self) -> Self {
+        let openings = self.openings.iter().fold(
+            BTreeMap::<usize, Opening>::new(),
+            |mut acc, (id, opening)| {
+                acc.insert(
+                    *id,
+                    Opening {
+                        direction: opening.direction,
+                        idx: opening.idx.clone(),
+                        blinder: opening.blinder.clone(),
+                    },
+                );
+                acc
+            },
+        );
+
+        Self {
+            inclusion_proof: self.inclusion_proof.clone(),
+            openings,
+        }
+    }
 }
 
 /// Error for [`EncodingProof`].
@@ -205,7 +228,7 @@ mod validation {
     #[derive(Debug, Deserialize)]
     pub(super) struct EncodingProofUnchecked {
         inclusion_proof: MerkleProof,
-        openings: HashMap<usize, Opening>,
+        openings: BTreeMap<usize, Opening>,
     }
 
     impl TryFrom<EncodingProofUnchecked> for EncodingProof {

@@ -4,12 +4,14 @@ version = "0.1.0-alpha.13"
 edition = "2024"
 
 [features]
-default = []
+default = ["private-facets", "public-facets"]
 fixtures = ["tlsn-core/fixtures", "dep:tlsn-data-fixtures"]
+private-facets = ["tlsn-core/private-facets"]
+public-facets = ["tlsn-core/public-facets", "dep:tlsn-tls-core"]
 
 [dependencies]
-tlsn-tls-core = { workspace = true }
-tlsn-core = { workspace = true }
+tlsn-tls-core = { workspace = true, optional = true }
+tlsn-core = { workspace = true, default-features = false}
 tlsn-data-fixtures = { workspace = true, optional = true }
 
 bcs = { workspace = true }

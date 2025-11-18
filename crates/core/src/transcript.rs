@@ -22,6 +22,7 @@ mod commit;
 pub mod encoding;
 pub mod hash;
 mod proof;
+#[cfg(feature = "public-facets")]
 mod tls;
 
 use std::{fmt, ops::Range};
@@ -38,7 +39,9 @@ pub use commit::{
 pub use proof::{
     TranscriptProof, TranscriptProofBuilder, TranscriptProofBuilderError, TranscriptProofError,
 };
+#[cfg(feature = "public-facets")]
 pub use tls::{Record, TlsTranscript};
+#[cfg(feature = "public-facets")]
 pub use tls_core::msgs::enums::ContentType;
 
 /// A transcript contains the plaintext of all application data communicated

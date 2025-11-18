@@ -173,6 +173,19 @@ impl TranscriptProof {
 
         Ok(self.transcript)
     }
+
+    /// Create a public clone of the proof by wiping private data from all the Openings of the Transcript
+    pub fn public_clone(&self) -> Result<Self, Box<dyn std::error::Error>> {
+        let encoding_proof = self.encoding_proof.as_ref().ok_or_else(|| {
+            TranscriptProofError::new(ErrorKind::Encoding, "encoding proof is missing")
+        })?;
+
+        Ok(Self {
+            transcript: self.transcript.clone(),
+            encoding_proof: Some(encoding_proof.public_clone()),
+            hash_secrets: self.hash_secrets.clone(),
+        })
+    }
 }
 
 /// Error for [`TranscriptProof`].

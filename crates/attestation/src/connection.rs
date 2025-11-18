@@ -21,12 +21,16 @@
 
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "public-facets")]
+use tlsn_core::connection::ServerEphemKey;
 use tlsn_core::{
-    connection::{HandshakeData, HandshakeVerificationError, ServerEphemKey, ServerName},
+    connection::{HandshakeData, HandshakeVerificationError, ServerName},
     hash::{Blinded, HashAlgorithm, HashProviderError, TypedHash},
 };
 
-use crate::{CryptoProvider, hash::HashAlgorithmExt, serialize::impl_domain_separator};
+#[cfg(feature = "public-facets")]
+use crate::CryptoProvider;
+use crate::{hash::HashAlgorithmExt, serialize::impl_domain_separator};
 
 /// Opens a [`ServerCertCommitment`].
 #[derive(Clone, Serialize, Deserialize)]
@@ -67,6 +71,7 @@ pub struct ServerIdentityProof {
     opening: ServerCertOpening,
 }
 
+#[cfg(feature = "public-facets")]
 impl ServerIdentityProof {
     pub(crate) fn new(name: ServerName, opening: ServerCertOpening) -> Self {
         Self { name, opening }
@@ -134,6 +139,7 @@ impl From<HandshakeVerificationError> for ServerIdentityProofError {
 #[derive(Debug)]
 enum ErrorKind {
     Provider,
+    #[cfg(feature = "public-facets")]
     Commitment,
     Certificate,
 }
@@ -142,6 +148,7 @@ impl std::fmt::Display for ErrorKind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             ErrorKind::Provider => write!(f, "provider"),
+            #[cfg(feature = "public-facets")]
             ErrorKind::Commitment => write!(f, "commitment"),
             ErrorKind::Certificate => write!(f, "certificate"),
         }

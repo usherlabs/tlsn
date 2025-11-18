@@ -46,7 +46,7 @@ codegen-units = 1
 tls-server-fixture = { path = "crates/tls/server-fixture" }
 tlsn-attestation = { path = "crates/attestation" }
 tlsn-cipher = { path = "crates/components/cipher" }
-tlsn-core = { path = "crates/core" }
+tlsn-core = { path = "crates/core", default-features = false }
 tlsn-data-fixtures = { path = "crates/data-fixtures" }
 tlsn-deap = { path = "crates/components/deap" }
 tlsn-formats = { path = "crates/formats" }

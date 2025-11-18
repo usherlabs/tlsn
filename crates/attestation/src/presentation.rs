@@ -62,7 +62,12 @@ impl Presentation {
         self.attestation.verifying_key()
     }
 
-    /// Verifies the presentation.
+    /// Verifies both private and public facets of the presentation.
+    /// # Availability
+    ///
+    /// This function is only available when both 'private-facets'
+    /// and `public-facets` features are enabled.
+    #[cfg(all(feature = "private-facets", feature = "public-facets"))]
     pub fn verify(
         self,
         provider: &CryptoProvider,
@@ -111,6 +116,107 @@ impl Presentation {
             connection_info,
             transcript,
             extensions,
+        })
+    }
+
+    /// Verifies only private facets of the presentation.
+    ///
+    /// # Availability
+    ///
+    /// This function is only available when the `private-facets` feature is enabled.
+    #[cfg(feature = "private-facets")]
+    pub fn verify_private_facets(
+        self,
+        provider: &CryptoProvider,
+    ) -> Result<PresentationOutput, PresentationError> {
+        let Self {
+            attestation,
+            transcript,
+            ..
+        } = self;
+
+        let attestation = attestation.verify(provider)?;
+
+        let transcript = transcript
+            .map(|transcript| {
+                transcript.verify_with_provider(
+                    &provider.hash,
+                    &attestation.body.connection_info().transcript_length,
+                    attestation
+                        .body
+                        .encoder_secret
+                        .as_ref()
+                        .map(|field| &field.data),
+                    attestation.body.transcript_commitments(),
+                )
+            })
+            .transpose()?;
+
+        let connection_info = attestation.body.connection_info().clone();
+
+        let extensions = attestation.body.extensions().cloned().collect();
+
+        Ok(PresentationOutput {
+            attestation,
+            server_name: None,
+            connection_info,
+            transcript,
+            extensions,
+        })
+    }
+
+    /// Verifies only public facets of the presentation.
+    /// # Availability
+    ///
+    /// This function is only available when the `public-facets` feature is enabled.
+    #[cfg(feature = "public-facets")]
+    pub fn verify_public_facets(
+        self,
+        provider: &CryptoProvider,
+    ) -> Result<PresentationOutput, PresentationError> {
+        let Self {
+            attestation,
+            identity,
+            ..
+        } = self;
+
+        let attestation = attestation.verify(provider)?;
+
+        let server_name = identity
+            .map(|identity| {
+                identity.verify_with_provider(
+                    provider,
+                    attestation.body.connection_info().time,
+                    attestation.body.server_ephemeral_key(),
+                    attestation.body.cert_commitment(),
+                )
+            })
+            .transpose()?;
+
+        let connection_info = attestation.body.connection_info().clone();
+
+        let extensions = attestation.body.extensions().cloned().collect();
+
+        Ok(PresentationOutput {
+            attestation,
+            server_name,
+            connection_info,
+            transcript: None,
+            extensions,
+        })
+    }
+
+    /// Create a public clone of the proof by wiping private data from all the Openings of the Transcript
+    pub fn public_clone(&self) -> Result<Self, Box<dyn std::error::Error>> {
+        let transcript = self.transcript.as_ref().ok_or_else(|| PresentationError {
+            kind: ErrorKind::Transcript,
+            source: Some("transcript is missing".into()),
+        })?;
+
+        Ok(Self {
+            attestation: self.attestation.clone(),
+            identity: self.identity.clone(),
+            transcript: Some(transcript.public_clone()?),
         })
     }
 }

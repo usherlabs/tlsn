@@ -4,9 +4,12 @@ use std::fmt;
 
 use rustls_pki_types as webpki_types;
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "public-facets")]
 use tls_core::msgs::{codec::Codec, enums::NamedGroup, handshake::ServerECDHParams};
 
-use crate::webpki::{CertificateDer, ServerCertVerifier, ServerCertVerifierError};
+#[cfg(feature = "public-facets")]
+use crate::webpki::ServerCertVerifier;
+use crate::webpki::{CertificateDer, ServerCertVerifierError};
 
 /// TLS version.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -18,6 +21,7 @@ pub enum TlsVersion {
     V1_3,
 }
 
+#[cfg(feature = "public-facets")]
 impl TryFrom<tls_core::msgs::enums::ProtocolVersion> for TlsVersion {
     type Error = &'static str;
 
@@ -164,6 +168,7 @@ impl fmt::Display for SignatureAlgorithm {
     }
 }
 
+#[cfg(feature = "public-facets")]
 impl From<tls_core::verify::SignatureAlgorithm> for SignatureAlgorithm {
     fn from(value: tls_core::verify::SignatureAlgorithm) -> Self {
         use tls_core::verify::SignatureAlgorithm as Core;
@@ -208,6 +213,7 @@ pub struct ServerEphemKey {
     pub key: Vec<u8>,
 }
 
+#[cfg(feature = "public-facets")]
 impl ServerEphemKey {
     /// Encodes the key exchange parameters as in TLS.
     pub(crate) fn kx_params(&self) -> Vec<u8> {
@@ -222,6 +228,7 @@ impl ServerEphemKey {
     }
 }
 
+#[cfg(feature = "public-facets")]
 impl TryFrom<tls_core::key::PublicKey> for ServerEphemKey {
     type Error = &'static str;
 
@@ -302,6 +309,7 @@ pub struct HandshakeData {
     pub binding: CertBinding,
 }
 
+#[cfg(feature = "public-facets")]
 impl HandshakeData {
     /// Verifies the handshake data.
     ///

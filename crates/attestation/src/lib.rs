@@ -416,6 +416,7 @@ impl Body {
     }
 
     /// Returns the server's ephemeral public key.
+    #[cfg(feature = "public-facets")]
     pub(crate) fn server_ephemeral_key(&self) -> &ServerEphemKey {
         &self.server_ephemeral_key.data
     }

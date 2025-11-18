@@ -12,7 +12,7 @@ edition = "2021"
 workspace = true
 
 [features]
-default = []
+default = ["private-facets", "public-facets"]
 fixtures = [
     "dep:hex",
     "dep:tlsn-data-fixtures",
@@ -20,10 +20,12 @@ fixtures = [
     "dep:aes-gcm",
     "dep:generic-array",
 ]
+private-facets = []
+public-facets = ["dep:tlsn-tls-core", "rustls-webpki/ring"]
 
 [dependencies]
 tlsn-data-fixtures = { workspace = true, optional = true }
-tlsn-tls-core = { workspace = true, features = ["serde"] }
+tlsn-tls-core = { workspace = true, optional = true, features = ["serde"] }
 tlsn-utils = { workspace = true }
 rangeset = { workspace = true, features = ["serde"] }
 
@@ -45,7 +47,7 @@ thiserror = { workspace = true }
 tiny-keccak = { workspace = true, features = ["keccak"] }
 web-time = { workspace = true }
 webpki-roots = { workspace = true }
-rustls-webpki = { workspace = true, features = ["ring"] }
+rustls-webpki = { workspace = true }
 rustls-pki-types = { workspace = true }
 itybity = { workspace = true }
 zeroize = { workspace = true, features = ["zeroize_derive"] }

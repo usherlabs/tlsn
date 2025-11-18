@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use bimap::BiMap;
 use rangeset::{RangeSet, UnionMut};
@@ -141,7 +141,7 @@ impl EncodingTree {
         &self,
         idxs: impl Iterator<Item = &'idx (Direction, RangeSet<usize>)>,
     ) -> Result<EncodingProof, EncodingTreeError> {
-        let mut openings = HashMap::new();
+        let mut openings = BTreeMap::new();
         for dir_idx in idxs {
             let direction = dir_idx.0;
             let idx = &dir_idx.1;

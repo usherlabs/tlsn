@@ -1,4 +1,6 @@
-use tlsn_core::{hash::HashProvider, webpki::ServerCertVerifier};
+use tlsn_core::hash::HashProvider;
+#[cfg(feature = "public-facets")]
+use tlsn_core::webpki::ServerCertVerifier;
 
 use crate::signing::{SignatureVerifierProvider, SignerProvider};
 
@@ -24,6 +26,7 @@ pub struct CryptoProvider {
     /// This is used to verify the server's certificate chain.
     ///
     /// The default verifier uses the Mozilla root certificates.
+    #[cfg(feature = "public-facets")]
     pub cert: ServerCertVerifier,
     /// Signer provider.
     ///
@@ -41,6 +44,7 @@ impl Default for CryptoProvider {
     fn default() -> Self {
         Self {
             hash: Default::default(),
+            #[cfg(feature = "public-facets")]
             cert: ServerCertVerifier::mozilla(),
             signer: Default::default(),
             signature: Default::default(),
